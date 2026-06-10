@@ -75,14 +75,17 @@ const defaultData: PartialBriefing = {
 export function WizardProvider({
   children,
   plano = "premium",
+  initialData,
 }: {
   children: ReactNode;
   plano?: Plano;
+  initialData?: PartialBriefing;
 }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<PartialBriefing>({
     ...defaultData,
     plano,
+    ...(initialData || {}),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hydrated, setHydrated] = useState(false);
