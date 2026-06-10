@@ -2,7 +2,7 @@
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { AudioTextarea } from "@/components/audio-fields";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useWizard } from "../wizard-context";
@@ -128,12 +128,12 @@ export function Step4Referencias() {
         <Label htmlFor="esteticaSites" className="text-base font-semibold">
           Estética dos sites *
         </Label>
-        <Textarea
+        <AudioTextarea
           id="esteticaSites"
           placeholder="Descreva o que você gosta nesses sites de referência..."
           rows={3}
           value={formData.esteticaSites || ""}
-          onChange={(e) => updateFormData({ esteticaSites: e.target.value })}
+          onChange={(v) => updateFormData({ esteticaSites: v })}
         />
       </div>
 
@@ -160,12 +160,12 @@ export function Step4Referencias() {
         <Label htmlFor="funcionalidades" className="text-base font-semibold">
           Funcionalidades essenciais *
         </Label>
-        <Textarea
+        <AudioTextarea
           id="funcionalidades"
           placeholder="Ex.: Busca por bairro, simulador de financiamento, chat online..."
           rows={3}
           value={formData.funcionalidades || ""}
-          onChange={(e) => updateFormData({ funcionalidades: e.target.value })}
+          onChange={(v) => updateFormData({ funcionalidades: v })}
         />
       </div>
 
@@ -173,12 +173,12 @@ export function Step4Referencias() {
         <Label htmlFor="requisitosAdicionais" className="text-base font-semibold">
           Requisitos adicionais
         </Label>
-        <Textarea
+        <AudioTextarea
           id="requisitosAdicionais"
           placeholder="(opcional) Algo mais que devemos saber?"
           rows={3}
           value={formData.requisitosAdicionais || ""}
-          onChange={(e) => updateFormData({ requisitosAdicionais: e.target.value })}
+          onChange={(v) => updateFormData({ requisitosAdicionais: v })}
         />
       </div>
 

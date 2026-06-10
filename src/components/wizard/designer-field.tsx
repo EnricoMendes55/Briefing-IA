@@ -1,9 +1,8 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AudioInput, AudioTextarea } from "@/components/audio-fields";
 
 export interface DesignerValue {
   texto?: string;
@@ -53,17 +52,17 @@ export function DesignerField({
       </div>
       {!designer &&
         (multiline ? (
-          <Textarea
+          <AudioTextarea
             rows={2}
             placeholder={placeholder}
             value={v.texto || ""}
-            onChange={(e) => onChange({ ...v, texto: e.target.value })}
+            onChange={(texto) => onChange({ ...v, texto })}
           />
         ) : (
-          <Input
+          <AudioInput
             placeholder={placeholder}
             value={v.texto || ""}
-            onChange={(e) => onChange({ ...v, texto: e.target.value })}
+            onChange={(texto) => onChange({ ...v, texto })}
           />
         ))}
     </div>

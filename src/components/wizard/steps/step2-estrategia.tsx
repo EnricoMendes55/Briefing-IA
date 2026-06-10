@@ -1,7 +1,7 @@
 "use client";
 
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { AudioTextarea } from "@/components/audio-fields";
 import { useWizard } from "../wizard-context";
 import { StepNavigation } from "../step-navigation";
 import { OptionCards, type OptionItem } from "../option-cards";
@@ -98,12 +98,12 @@ export function Step2Estrategia() {
           ⚠️ Atenção: <strong>este mesmo texto será usado no layout</strong>.
           Escreva com cuidado, sem pressa, capricho na redação.
         </p>
-        <Textarea
+        <AudioTextarea
           id="historia"
           placeholder="Conte a história, a missão e os diferenciais da imobiliária..."
           rows={6}
           value={historia}
-          onChange={(e) => updateFormData({ historia: e.target.value })}
+          onChange={(v) => updateFormData({ historia: v })}
         />
         <p className={`text-xs ${historia.trim().length < HISTORIA_MIN ? "text-muted-foreground" : "text-primary"}`}>
           {historia.trim().length}/{HISTORIA_MIN} caracteres mínimos
