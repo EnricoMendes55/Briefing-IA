@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dados de briefings (não versionar — contém dados de clientes)
+/data/briefings.json
+
+# uploads de clientes e imagens geradas (não versionar)
+/public/uploads/
