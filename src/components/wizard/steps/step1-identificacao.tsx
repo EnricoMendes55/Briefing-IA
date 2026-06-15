@@ -278,6 +278,10 @@ export function Step1Identificacao() {
       return fail("Informe um telefone válido com DDD.");
     if (!formData.imobiliaria || formData.imobiliaria.trim().length < 2)
       return fail("Informe o nome da imobiliária.");
+    if (!formData.creciTipo || (formData.creciTipo !== "F" && formData.creciTipo !== "J"))
+      return fail("Selecione o tipo de CRECI (Físico ou Jurídico).");
+    if (!formData.creciNumero || formData.creciNumero.trim().length === 0)
+      return fail("Informe o número do CRECI.");
 
     if (!formData.semRedesSociais) {
       const lista: RedeSocialItem[] = Array.isArray(formData.redesSociais)
@@ -353,6 +357,35 @@ export function Step1Identificacao() {
             placeholder="(11) 99999-9999"
             value={formData.telefone || ""}
             onChange={(e) => updateFormData({ telefone: maskPhone(e.target.value) })}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-base font-semibold">CRECI *</Label>
+        <p className="text-xs text-muted-foreground">
+          Selecione o tipo (Físico ou Jurídico) e informe apenas os números do CRECI.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-[120px_1fr]">
+          <select
+            value={formData.creciTipo || ""}
+            onChange={(e) => updateFormData({ creciTipo: e.target.value })}
+            className="h-12 rounded-xl border border-input bg-card px-3 text-sm shadow-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
+          >
+            <option value="">Tipo</option>
+            <option value="F">F — Físico</option>
+            <option value="J">J — Jurídico</option>
+          </select>
+          <Input
+            id="creciNumero"
+            inputMode="numeric"
+            placeholder="Somente números (ex.: 12345)"
+            value={formData.creciNumero || ""}
+            onChange={(e) =>
+              updateFormData({
+                creciNumero: e.target.value.replace(/\D/g, ""),
+              })
+            }
           />
         </div>
       </div>

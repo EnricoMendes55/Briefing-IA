@@ -84,6 +84,14 @@ export function Step7Revisao() {
           <Field label="Telefone" value={formData.telefone} />
           <Field label="Imobiliária" value={formData.imobiliaria} />
           <Field
+            label="CRECI"
+            value={
+              formData.creciTipo && formData.creciNumero
+                ? `${formData.creciTipo} ${formData.creciNumero}`
+                : undefined
+            }
+          />
+          <Field
             label="Redes sociais"
             value={
               formData.semRedesSociais
