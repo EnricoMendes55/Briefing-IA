@@ -70,6 +70,13 @@ const defaultData: PartialBriefing = {
   semRedesSociais: false,
   redesSociais: [],
   semEndereco: false,
+  // Informações essenciais do card de imóvel pré-marcadas — o cliente pode desmarcar.
+  cardInfo: [
+    "Imagem do imóvel",
+    "Título do imóvel",
+    "Valor do imóvel",
+    "Endereço do imóvel",
+  ],
 };
 
 export function WizardProvider({

@@ -268,8 +268,8 @@ export function Step1Identificacao() {
   const { formData, updateFormData } = useWizard();
 
   function validate(): boolean {
-    if (!formData.codigoImplantacao?.trim())
-      return fail("Informe o código da implantação.");
+    if (!formData.codigoImobiliaria?.trim())
+      return fail("Informe o código da imobiliária.");
     if (!formData.nomeResponsavel || formData.nomeResponsavel.trim().length < 2)
       return fail("Informe o nome do responsável.");
     if (!formData.email || !isValidEmail(formData.email))
@@ -313,12 +313,12 @@ export function Step1Identificacao() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="codigoImplantacao">Código da implantação *</Label>
+          <Label htmlFor="codigoImobiliaria">Código da imobiliária *</Label>
           <Input
-            id="codigoImplantacao"
+            id="codigoImobiliaria"
             placeholder="Ex.: IMOB-2026-001"
-            value={formData.codigoImplantacao || ""}
-            onChange={(e) => updateFormData({ codigoImplantacao: e.target.value })}
+            value={formData.codigoImobiliaria || ""}
+            onChange={(e) => updateFormData({ codigoImobiliaria: e.target.value })}
           />
         </div>
         <div className="space-y-2">

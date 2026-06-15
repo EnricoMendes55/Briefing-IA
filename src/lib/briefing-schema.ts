@@ -108,7 +108,7 @@ export interface EnderecoData {
 export type WizardData = {
   plano?: Plano;
   // Identificação
-  codigoImplantacao?: string;
+  codigoImobiliaria?: string;
   nomeResponsavel?: string;
   email?: string;
   telefone?: string;
@@ -134,7 +134,7 @@ const optionWithOther = (options: readonly string[]) =>
 
 export const briefingSchema = z.object({
   // Etapa 1 — Identificação
-  codigoImplantacao: z.string().optional(),
+  codigoImobiliaria: z.string().optional(),
   nomeResponsavel: z.string().min(2, "Nome é obrigatório"),
   email: z.string().email("E-mail inválido"),
   telefone: z.string().min(10, "Telefone inválido"),
@@ -179,7 +179,7 @@ export type BriefingFormData = z.infer<typeof briefingSchema>;
 
 export const stepSchemas = {
   1: briefingSchema.pick({
-    codigoImplantacao: true,
+    codigoImobiliaria: true,
     nomeResponsavel: true,
     email: true,
     telefone: true,

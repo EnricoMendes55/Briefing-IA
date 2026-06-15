@@ -139,6 +139,17 @@
   html {
     @apply font-sans;
   }
+  /* Tudo que é clicável aparece com cursor pointer */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="checkbox"],
+  [role="radio"],
+  a[href],
+  label:has(input[type="checkbox"]),
+  label:has(input[type="radio"]),
+  summary {
+    cursor: pointer;
+  }
 }
 
 @keyframes marquee {

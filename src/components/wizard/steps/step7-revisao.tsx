@@ -78,7 +78,7 @@ export function Step7Revisao() {
 
       <Section title={STEP_TITLES[1]} step={1} onEdit={setStep}>
         <div className="space-y-1">
-          <Field label="Cód. implantação" value={formData.codigoImplantacao} />
+          <Field label="Cód. imobiliária" value={formData.codigoImobiliaria} />
           <Field label="Responsável" value={formData.nomeResponsavel} />
           <Field label="E-mail" value={formData.email} />
           <Field label="Telefone" value={formData.telefone} />

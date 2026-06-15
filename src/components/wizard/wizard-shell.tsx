@@ -58,15 +58,12 @@ export function WizardShell() {
                 <li key={step}>
                   <button
                     type="button"
-                    onClick={() => isDone && setStep(step)}
-                    disabled={!isDone && !isActive}
+                    onClick={() => setStep(step)}
                     className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition-all ${
                       isActive
                         ? "bg-primary-foreground/20 shadow-lg ring-1 ring-primary-foreground/30"
-                        : isDone
-                          ? "hover:bg-primary-foreground/10"
-                          : "opacity-50"
-                    } ${isDone ? "cursor-pointer" : ""}`}
+                        : "hover:bg-primary-foreground/10"
+                    }`}
                   >
                     <span
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
