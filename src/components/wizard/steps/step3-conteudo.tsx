@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,10 @@ import {
   BLOCOS,
   type NavItem,
 } from "@/lib/content-config";
+
+// IDs que ficam bloqueados quando o cliente marca "não quero quem somos" (Etapa 2)
+const SOBRE_NAV_ID = "sobre";
+const SOBRE_BLOCO_ID = "sobre-nos";
 
 // ----------------------------------------------------------------------------
 // Navegação
@@ -63,8 +68,17 @@ function NavegacaoSection() {
   const sel: string[] = formData.navItens || [];
   const detalhes: Record<string, DesignerValue> = formData.navDetalhes || {};
   const contato = formData.contatoConfig || {};
+  const semHistoria = !!formData.semHistoria;
+
+  function isItemBloqueado(id: string) {
+    return semHistoria && id === SOBRE_NAV_ID;
+  }
 
   function toggle(id: string) {
+    if (isItemBloqueado(id)) {
+      alert("Você marcou na Etapa 2 que o site não terá informações sobre quem somos. Desmarque essa opção lá pra liberar 'Sobre Nós' aqui.");
+      return;
+    }
     if (sel.includes(id)) {
       updateFormData({ navItens: sel.filter((s) => s !== id) });
     } else {
@@ -104,16 +118,25 @@ function NavegacaoSection() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {NAV_ITENS.map((item) => (
-          <NavToggle
-            key={item.id}
-            item={item}
-            checked={sel.includes(item.id)}
-            disabled={sel.length >= NAV_MAX}
-            onToggle={() => toggle(item.id)}
-          />
-        ))}
+        {NAV_ITENS.map((item) => {
+          const bloqueado = isItemBloqueado(item.id);
+          return (
+            <NavToggle
+              key={item.id}
+              item={item}
+              checked={sel.includes(item.id)}
+              disabled={bloqueado || sel.length >= NAV_MAX}
+              onToggle={() => toggle(item.id)}
+            />
+          );
+        })}
       </div>
+      {semHistoria && (
+        <p className="text-xs text-muted-foreground">
+          🔒 &quot;Sobre nós&quot; está bloqueado porque você marcou na Etapa 2 que o
+          site não terá informações sobre quem somos.
+        </p>
+      )}
 
       {/* Menu hambúrguer */}
       <div className="rounded-xl border border-border bg-card p-4">
@@ -129,7 +152,7 @@ function NavegacaoSection() {
         </p>
         {hamburguer && (
           <div className="mt-3 flex flex-wrap gap-2">
-            {NAV_ITENS.map((item) => (
+            {NAV_ITENS.filter((i) => !isItemBloqueado(i.id)).map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -224,6 +247,23 @@ function BlocosSection() {
   const { formData, updateFormData } = useWizard();
   const sel: string[] = formData.blocosSel || [];
   const config: Record<string, BlocoConfigData> = formData.blocosConfig || {};
+  const semHistoria = !!formData.semHistoria;
+  const redesSociais = Array.isArray(formData.redesSociais) ? formData.redesSociais : [];
+  const semRedes = !!formData.semRedesSociais;
+
+  function bloqueado(blocoId: string): { off: boolean; motivo?: string } {
+    if (semHistoria && blocoId === SOBRE_BLOCO_ID)
+      return {
+        off: true,
+        motivo: "Bloqueado porque você marcou na Etapa 2 que o site não terá informações sobre quem somos.",
+      };
+    if (blocoId === "redes-sociais" && (semRedes || redesSociais.length === 0))
+      return {
+        off: true,
+        motivo: "Bloqueado porque nenhuma rede social foi preenchida na Etapa 1. Adicione ao menos uma pra liberar esta seção.",
+      };
+    return { off: false };
+  }
 
   function toggle(id: string) {
     if (sel.includes(id)) {
@@ -249,33 +289,53 @@ function BlocosSection() {
       <div className="space-y-3">
         {BLOCOS.map((bloco) => {
           const ativo = sel.includes(bloco.id);
+          const blk = bloqueado(bloco.id);
           return (
             <div
               key={bloco.id}
               className={`overflow-hidden rounded-2xl border-2 transition-all ${
-                ativo ? "border-primary bg-card" : "border-border bg-card"
+                blk.off
+                  ? "border-border bg-muted/30"
+                  : ativo
+                    ? "border-primary bg-card"
+                    : "border-border bg-card"
               }`}
             >
               <button
                 type="button"
-                onClick={() => toggle(bloco.id)}
-                className="flex w-full items-center gap-3 px-4 py-3.5 text-left"
+                onClick={() => {
+                  if (blk.off) {
+                    alert(blk.motivo);
+                    return;
+                  }
+                  toggle(bloco.id);
+                }}
+                disabled={blk.off}
+                className={`flex w-full items-center gap-3 px-4 py-3.5 text-left ${blk.off ? "opacity-50" : ""}`}
               >
                 <span
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
-                    ativo ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/40"
+                    ativo && !blk.off ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/40"
                   }`}
                 >
-                  {ativo && (
+                  {ativo && !blk.off && (
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}
                 </span>
-                <span className="font-medium">{bloco.label}</span>
+                <span className="font-medium">
+                  {blk.off && "🔒 "}
+                  {bloco.label}
+                  {blk.off && (
+                    <span className="ml-2 block text-xs font-normal text-muted-foreground">
+                      {blk.motivo}
+                    </span>
+                  )}
+                </span>
               </button>
 
-              {ativo && (
+              {ativo && !blk.off && (
                 <div className="border-t border-border bg-secondary/20 px-4 py-4">
                   <BlocoConfigPanel
                     bloco={bloco}
@@ -369,7 +429,44 @@ function OrdemSection() {
 // Etapa
 // ----------------------------------------------------------------------------
 export function Step3Conteudo() {
-  const { formData } = useWizard();
+  const { formData, updateFormData } = useWizard();
+  const semHistoria = !!formData.semHistoria;
+  const semRedes = !!formData.semRedesSociais;
+  const semRedesItens =
+    semRedes ||
+    !Array.isArray(formData.redesSociais) ||
+    formData.redesSociais.length === 0;
+
+  // Cascata: remove automaticamente "Sobre nós" e "Redes Sociais" das seleções
+  // quando as pré-condições da Etapa 1/2 foram desmarcadas.
+  useEffect(() => {
+    const nav: string[] = formData.navItens || [];
+    const hamb: string[] = formData.navHamburguerItens || [];
+    const blocos: string[] = formData.blocosSel || [];
+
+    const patch: Record<string, unknown> = {};
+    if (semHistoria) {
+      if (nav.includes(SOBRE_NAV_ID))
+        patch.navItens = nav.filter((id) => id !== SOBRE_NAV_ID);
+      if (hamb.includes(SOBRE_NAV_ID))
+        patch.navHamburguerItens = hamb.filter((id) => id !== SOBRE_NAV_ID);
+      if (blocos.includes(SOBRE_BLOCO_ID))
+        patch.blocosSel = blocos.filter((id) => id !== SOBRE_BLOCO_ID);
+    }
+    if (semRedesItens && blocos.includes("redes-sociais")) {
+      patch.blocosSel = (patch.blocosSel as string[] | undefined) ||
+        blocos.filter((id) => id !== "redes-sociais");
+      if (semHistoria) {
+        patch.blocosSel = (patch.blocosSel as string[]).filter(
+          (id) => id !== "redes-sociais" && id !== SOBRE_BLOCO_ID
+        );
+      } else {
+        patch.blocosSel = blocos.filter((id) => id !== "redes-sociais");
+      }
+    }
+    if (Object.keys(patch).length) updateFormData(patch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [semHistoria, semRedesItens]);
 
   function validate(): boolean {
     const nav: string[] = formData.navItens || [];
